@@ -17,8 +17,8 @@ class Layer_Dense:
 
 X, y = spiral_data(samples=100, classes=3)
 
-dense1 = Layer_Dense(2, 3)
+dense = Layer_Dense(2, 3)
 
-dense1.forward(X)
+dense.forward(X)
 
-print(dense1.output[:5])
+print(dense.output[:5])
