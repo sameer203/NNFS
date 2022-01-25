@@ -8,4 +8,3 @@ class Layer_Dense:
     def forward(self,inputs):
         # Calculate output values from inputs, weights and biases
         self.output = np.dot(inputs, self.weights) + self.biases
-        pass
