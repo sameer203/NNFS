@@ -34,6 +34,47 @@ class Activation_Softmax:
 
         self.output = probabilities
 
+class Loss:
+    # Calculates the data and regularization losses
+    # given model output and ground truth values
+
+    def calculate(self, output, y):
+
+        # Calculate sample loss
+        sample_losses = self.forward(output, y)
+
+        # Calculate mean loss
+        data_loss = np.mean(sample_losses)
+
+        # Return Loss
+        return data_loss
+
+class Loss_CategoricalCrossEntropy(Loss):
+
+    # Forward pass
+    def forward(self, y_pred, y_true):
+        
+        # Number of samples in each bactch
+        samples = len(y_pred)
+
+        # Clip the data to prevent division by 0
+        # Clip both sides to not to drag mean towards any value
+        y_pred_clipped = np.clip(y_pred, 1e-7, 1 - 1e-7)
+
+        # Probabilities for target values only if categorical labels
+        if len(y_true.shape) == 1:
+            correct_confidence = y_pred_clipped[range(samples), y_true]
+
+        # Mask values only for One Hot Encoded labels
+        elif len(y_true.shape) ==2:
+            correct_confidence = np.sum(y_pred_clipped * y_true, axis=1)
+
+        # Losses
+        negative_log_likelihoods = -np.log(correct_confidence)
+        return negative_log_likelihoods
+
+
+
 # Create dataset
 X, y = spiral_data(samples=100, classes=3)
 
@@ -49,6 +90,9 @@ dense2 = Layer_Dense(3, 3)
 
 # Create Softmax activation (to be used with Dense layer):
 activation2 = Activation_Softmax()
+
+# Create loss function
+loss_function = Loss_CategoricalCrossEntropy()
 
 # Make a forward pass of our training data through this layer
 dense1.forward(X)
@@ -67,3 +111,7 @@ activation2.forward(dense2.output)
 
 # Let's see output of the first few samples:
 print(activation2.output[:5])
+
+loss = loss_function.calculate(activation2.output, y)
+
+print('loss:', loss)
