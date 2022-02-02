@@ -3,8 +3,18 @@ import numpy as np
 class Activation_ReLU:
 
     def forward(self, inputs):
+
+        # Rembember input values
+        self.inputs = inputs
         # Calculate Output values from inputs
         self.output = np.maximum(0, inputs)
+
+    def backward(self, dvalues):
+        # copy of the values
+        self.dinputs = dvalues.copy()
+
+        # Zero gradients where input values were negative
+        self.dinputs[self.inputs <= 0] = 0
 
 
 class Activation_Softmax:
