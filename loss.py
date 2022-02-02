@@ -31,7 +31,7 @@ class Loss_CategoricalCrossEntropy(Loss):
 
         # Probabilities for target values only if categorical labels
         if len(y_true.shape) == 1:
-            correct_confidence = y_pred_clipped[range(samples, y_true)]
+            correct_confidence = y_pred_clipped[range(samples), y_true]
 
         # Mask values only for One Hot Encoded labels
         elif len(y_true.shape) ==2:
@@ -40,6 +40,23 @@ class Loss_CategoricalCrossEntropy(Loss):
         # Losses
         negative_log_likelihoods = -np.log(correct_confidence)
         return negative_log_likelihoods
+
+    def backward(self, dvalues, y_true):
+        # Number of sample  
+        samples = len(dvalues)
+
+        # No of labels in each sample
+        labels = len(dvalues[0])
+
+        # If labels are sparse, turn them into one-hot vector
+        if len(y_true.shape) == 1:
+            y_true = np.eye(labels[y_true])
+
+        # Calculate gradients
+        self.dinputs = -y_true/dvalues
+
+        # Normalize Gradients
+        self.dinputs = self.dinputs/samples
 
 
         
