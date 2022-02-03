@@ -42,3 +42,33 @@ class Activation_Softmax:
             jacobian_matrix = np.diagflat(single_output) - np.dot(single_output, single_output.T)
             # Calculate sample-wise gradient and add it to the array of sample gradients
             self.inputs[index] = np.dot(jacobian_matrix, single_dvalues)
+
+# Softmax classifier - combined Softmax activation and cross-entropy loss for faster backward step
+class Activation_Softmax_Loss_CategoricalCrossentropy():
+
+    # Create activation and loss function objects
+    def _init__(self):
+        self.activation = Activation_Softmax()
+        self.loss = Loss_CategoricalCrossEntropy()
+
+    # Forward
+    def forward(self, inputs, y_true):
+        # Output layer's activation function
+        self.activation.forward(inputs)
+        # Set the outputs
+        self.output = self.activation.output
+        # Calculate and return loss value
+        return self.loss.calculate(self.output, y_true)
+
+    def backward(self, dvalues, y_true):
+        # Number of sample  
+        samples = len(dvalues)
+        # If labels are one-hot encoded turn them into discrete values
+        if len(y_true.shape) == 2:
+            y_true = np.argmax(y_true, axis=1)
+
+        self.dinputs = dvalues.copy()
+        # Calculate Gradients
+        self.dinput[range(samples), y_true] -= 1
+        # Normalize gradient
+        self.dinputs = self.dinputs/samples 
