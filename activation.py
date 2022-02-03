@@ -28,3 +28,17 @@ class Activation_Softmax:
         probabilities = exp_values / np.sum(exp_values, axis=1, keepdims=True)
 
         self.output = probabilities
+
+    def backward(self, dvalues):
+
+        # Create Unintitalized array
+        self.dinputs = np.empty_like(dvalues)
+
+        # Enumerate output and gradients
+        for index, (single_output, single_dvalues) in enumerate(zip(self.output, dvalues)):
+            # Flatten Output array
+            single_output = single_output.shape(-1,1)
+            # Calculate the Jacobian matrix
+            jacobian_matrix = np.diagflat(single_output) - np.dot(single_output, single_output.T)
+            # Calculate sample-wise gradient and add it to the array of sample gradients
+            self.inputs[index] = np.dot(jacobian_matrix, single_dvalues)
