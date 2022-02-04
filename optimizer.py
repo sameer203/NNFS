@@ -37,7 +37,7 @@ class Optimizer_SGD:
     def post_update_params(self):
         self.iterations += 1
 
- class Optimizer_AdaGrad:
+class Optimizer_AdaGrad:
 
     def __init__(self, learning_rate = 1, decay = 0, eplison=1e-7):
         self.learning_rate = learning_rate
