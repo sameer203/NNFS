@@ -26,13 +26,22 @@ class Layer_Dense:
         self.dweights = np.dot(self.inputs.T, dvalues)
         self.dbiases = np.sum(dvalues, axis=0, keepdims=True)
 
+        # Gradients on regularization 
+        # L1 on weights
+        if self.weight_regularizer_l1 > 0:
+            dL1 = np.ones_like(self.weights)
+            dL1[self.weight <0] = -1
+            self.dweights += self.weight_regularizer_l1 * dL1
+        # L2 on weight
+        if self.weight_regularizer_l2 > 0:
+            self.dweights += 2 * self.weight_regularizer_l2 * self.weights
+        # L1 on biases
+        if self.bias_regularizer_l1 > 0:
+            dL1 = np.ones_like(self.bias)
+            dL1[self.biases <0] = -1
+            self.dbiases += self.bias_regularizer_l1 * dL1
+        # L2 on biases
+        if self.bias_regularizer_l2 > 0:
+            self.dbiases += 2 * self.bias_regularizer_l2 * self.biases
         # Gradient on values
         self.dinputs = np.dot(dvalues, self.weights.T)
-
-X, y = spiral_data(samples=100, classes=3)
-
-dense = Layer_Dense(2, 3)
-
-dense.forward(X)
-
-print(dense.output[:5])
