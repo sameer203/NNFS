@@ -41,11 +41,37 @@ class Model():
         
         #self.loss.remember_trainable_layers(self.trainable_layers)
     
-    def train(self, X, y, *, epochs=1, print_every=1, validation_data=None):
+    def train(self, X, y, *, epochs=1, batch_size=None, print_every=1, validation_data=None):
 
         self.accuracy.init(y)
 
+        train_steps=1
+
+        if validation_data is not None :
+            validation_steps = 1
+            # For better readability
+            X_val, y_val = validation_data
+
+        # Calculate number of steps
+        if batch_size is not None :
+            train_steps = len (X) // batch_size
+            # Dividing rounds down. If there are some remaining
+            # data, but not a full batch, this won't include it
+            # Add `1` to include this not full batch
+            if train_steps * batch_size < len (X):
+                train_steps += 1
+            if validation_data is not None :
+                validation_steps = len (X_val) // batch_size
+                # Dividing rounds down. If there are some remaining
+                # data, but nor full batch, this won't include it
+                # Add `1` to include this not full batch
+                if validation_steps * batch_size < len (X_val):
+                    validation_steps += 1
+
         for epoch in range(1, epochs+1):
+
+            print ( f 'epoch: {epoch} ' )
+            
             output = self.forward(X, training=True)
             data_loss, regularization_loss = self.loss.calculate(output, y, 
                                                                 include_regularization=True)
