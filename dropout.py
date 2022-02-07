@@ -9,6 +9,11 @@ class Dropout():
     
     def forward(self,inputs):
         self.inputs = inputs
+
+        if not training:
+            self.output = inputs.copy()
+            return
+
         self.binary_mask = np.random.binomial(1, self.rate, size=input.shape) / self.rate
         self.output = inputs * self.binary_mask
 

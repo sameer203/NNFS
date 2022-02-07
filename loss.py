@@ -26,7 +26,7 @@ class Loss:
 
         return regularization_loss
     
-    def calculate(self, output, y):
+    def calculate(self, output, y, *, include_regularization=False):
 
         # Calculate sample loss
         sample_losses = self.forward(output, y)
@@ -34,8 +34,11 @@ class Loss:
         # Calculate mean loss
         data_loss = np.mean(sample_losses)
 
+        if not include_regularization:
+            return data_loss
+
         # Return Loss
-        return data_loss, regularization_loss
+        return data_loss, self.regularization_loss
 
 class Loss_CategoricalCrossEntropy(Loss):
 
