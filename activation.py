@@ -15,6 +15,9 @@ class Activation_ReLU:
 
         # Zero gradients where input values were negative
         self.dinputs[self.inputs <= 0] = 0
+    
+    def predictions ( self , outputs ):
+        return outputs
 
 
 class Activation_Softmax:
