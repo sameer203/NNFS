@@ -38,7 +38,7 @@ class Loss:
             return data_loss
 
         # Return Loss
-        return data_loss, self.regularization_loss
+        return data_loss, self.regularization_loss()
 
 class Loss_CategoricalCrossEntropy(Loss):
 
