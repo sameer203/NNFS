@@ -10,9 +10,10 @@ class Model():
     def add(self, layer):
         self.layers.append(layer)
 
-    def set(self, *, loss, optimizer):
+    def set(self, *, loss, optimizer, accuracy):
         self.loss = loss
         self.optimizer = optimizer
+        self.accuracy = accuracy
     
     def finalize(self):
         self.input_layer = Layer_Input()
