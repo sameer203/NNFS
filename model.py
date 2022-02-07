@@ -28,6 +28,7 @@ class Model():
             else:
                 self.layers[i].prev = self.layers[i-1]
                 self.layers[i].next = self.loss
+                self.output_layer_activation = self.layers[i]
 
             if hasattr(self.layers[i], 'weights'):
                 self.trainable_layers.append(self.layers[i])
