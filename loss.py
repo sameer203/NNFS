@@ -1,3 +1,4 @@
+from random import sample
 import numpy as np
 import nnfs
 
@@ -34,11 +35,27 @@ class Loss:
         # Calculate mean loss
         data_loss = np.mean(sample_losses)
 
+        self.accumulated_sum +=  np.sum(sample_losses)
+        self.accumulated_count += len(sample_losses)
+
         if not include_regularization:
             return data_loss
 
         # Return Loss
         return data_loss, self.regularization_loss()
+
+    def calculate_accumulated(self, *, include_regularization=False):
+        data_loss = self.accumulated_sum / self.accumulated_count
+
+        if not include_regularization:
+            return data_loss
+
+        return data_loss, self.regularization_loss()
+   
+    def new_pass(self):
+        self.accumulated_sum = 0
+        self.accumulated_count = 0
+
 
 class Loss_CategoricalCrossEntropy(Loss):
 
