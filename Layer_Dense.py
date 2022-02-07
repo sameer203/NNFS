@@ -45,3 +45,9 @@ class Layer_Dense:
             self.dbiases += 2 * self.bias_regularizer_l2 * self.biases
         # Gradient on values
         self.dinputs = np.dot(dvalues, self.weights.T)
+
+
+class Layer_Input():
+
+    def forward(self, inputs):
+        self.outputs = inputs
