@@ -43,6 +43,9 @@ class Activation_Softmax:
             # Calculate sample-wise gradient and add it to the array of sample gradients
             self.inputs[index] = np.dot(jacobian_matrix, single_dvalues)
 
+    def prediction(self, outputs):
+        return np.argmax(outputs, axis=1)
+
 # Softmax classifier - combined Softmax activation and cross-entropy loss for faster backward step
 class Activation_Softmax_Loss_CategoricalCrossentropy():
 
@@ -81,6 +84,9 @@ class Activation_Sigmoid():
 
     def backward(self, dvalues):
         self.dinputs = dvalues * (1 - self.output) * self.output
+    
+    def prediction(self, outputs):
+        return (outputs > 0.5 ) * 1
 
 class Activation_Linear():
 
@@ -90,6 +96,9 @@ class Activation_Linear():
 
     def backward(self, dvalues):
         self.dvalues = dvalues.copy()
+
+    def predictions ( self , outputs ):
+        return outputs
 
         
 

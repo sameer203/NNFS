@@ -28,6 +28,9 @@ class Model():
             else:
                 self.layers[i].prev = self.layers[i-1]
                 self.layers[i].next = self.loss
+
+            if hasattr(self.layers[i], 'weights'):
+                self.trainable_layers.append(self.layers[i])
     
     def train(self, X, y, *, epochs=1, print_every=1):
         for epoch in range(0, epochs+1):
